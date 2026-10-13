@@ -56,3 +56,10 @@ def test_unsupported_configuration_reduces_confidence():
     assert result["verdict"] == "NEEDS_REVIEW"
     assert result["confidence"] < 0.5
     assert result["parser_coverage"] < 1
+
+
+def test_noncritical_violation_requires_review():
+    payload = request([{"source": "client", "target": "service"}]).model_dump()
+    payload["intents"][0]["critical"] = False
+    result = analyze(ChangeRequest.model_validate(payload))
+    assert result["verdict"] == "NEEDS_REVIEW"
