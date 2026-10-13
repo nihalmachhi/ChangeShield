@@ -70,11 +70,14 @@ def analyze(request: ChangeRequest) -> dict:
                 else [],
             }
         )
-    has_violation = any(item["violated"] for item in findings)
-    low_confidence = confidence < (0.5 if any(f["critical"] for f in findings) else 0.7)
-    verdict = "NEEDS_REVIEW" if low_confidence else ("FAIL" if has_violation else "PASS")
-    if has_violation and low_confidence:
+    critical_violation = any(item["violated"] and item["critical"] for item in findings)
+    noncritical_violation = any(item["violated"] and not item["critical"] for item in findings)
+    if critical_violation:
+        verdict = "FAIL" if confidence >= 0.5 else "NEEDS_REVIEW"
+    elif noncritical_violation or confidence < 0.7:
         verdict = "NEEDS_REVIEW"
+    else:
+        verdict = "PASS"
     recognized = len(request.before.links) + len(request.after.links)
     coverage = (
         recognized / (recognized + len(unsupported)) if recognized + len(unsupported) else 1.0
