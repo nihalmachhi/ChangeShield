@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/readme-icon.png" alt="ChangeShield icon" width="112" />
+</p>
+
 # ChangeShield
 
 ChangeShield is a read-only network-change reviewer. It compares a declared before/after topology and checks reachability and isolation intents before deployment.
