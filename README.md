@@ -6,6 +6,22 @@ ChangeShield is a read-only network-change reviewer. It compares a declared befo
 
 This MVP models networks as nodes and enabled links. It finds paths with breadth-first search, reports changed links and the candidate config-line provenance, and marks unsupported lines as uncertainty. It does not parse vendor device configuration, connect to devices, deploy changes, or generate automatic fixes. Use the explicit topology model and do not interpret PASS as full device-configuration verification.
 
+## How it works
+
+ChangeShield compares two explicit topology snapshots and checks requested connectivity and isolation properties before a proposed change is reviewed.
+
+```mermaid
+flowchart LR
+  A[Before topology and candidate topology] --> B[Validate nodes and links]
+  B --> C[Compare enabled links]
+  C --> D[Breadth-first reachability checks]
+  D --> E[Intent results with line provenance]
+  E --> F[Read-only analysis API]
+  F --> G[React dashboard and report]
+```
+
+The analyzer reports paths, changed links, and unsupported input as uncertainty. A PASS means the modeled topology satisfies the supplied checks; it does not verify vendor device configuration. No device connection, deployment, or automatic fix is performed.
+
 ## Run locally
 
 Requires Python 3.11+ and Node.js 20+.
@@ -33,4 +49,5 @@ Viewer tokens can read prior reports. Analyst tokens can submit analyses. Admin 
 uv run pytest
 npm --prefix dashboard run build
 ~~~
+
 
