@@ -15,13 +15,18 @@ This MVP models networks as nodes and enabled links. It finds paths with breadth
 ChangeShield compares two explicit topology snapshots and checks requested connectivity and isolation properties before a proposed change is reviewed.
 
 ```mermaid
-flowchart LR
-  A[Before topology and candidate topology] --> B[Validate nodes and links]
-  B --> C[Compare enabled links]
-  C --> D[Breadth-first reachability checks]
-  D --> E[Intent results with line provenance]
-  E --> F[Read-only analysis API]
-  F --> G[React dashboard and report]
+flowchart TD
+  A[Before topology] --> C[Validate supported topology model]
+  B[Candidate topology and intent checks] --> C
+  D[Candidate config lines] --> E[Track source-line provenance]
+  C --> F[Compare nodes and enabled links]
+  F --> G[Breadth-first reachability analysis]
+  G --> H[Check required reachability and isolation]
+  E --> I[Attach provenance and unsupported-input uncertainty]
+  H --> I
+  I --> J[Read-only analysis API]
+  J --> K[React dashboard and report]
+  K -. human reviews result .-> L[Deployment decision stays outside the tool]
 ```
 
 The analyzer reports paths, changed links, and unsupported input as uncertainty. A PASS means the modeled topology satisfies the supplied checks; it does not verify vendor device configuration. No device connection, deployment, or automatic fix is performed.
